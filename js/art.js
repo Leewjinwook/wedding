@@ -10,7 +10,7 @@ export class PixelWorld{
  house(x,y,pink=false){this.rect(x-27,y-1,55,7,'#b8c697');this.rect(x-23,y-31,46,33,'#c5a17c');this.rect(x-21,y-30,42,29,'#f6e6c4');this.rect(x-28,y-35,56,5,'#98765b');for(let i=0;i<5;i++)this.rect(x-27+i*4,y-39-i*4,54-i*8,5,pink?'#c68680':'#a8ac83');for(let i=0;i<4;i++)this.rect(x-22+i*6,y-39-i*4,42-i*12,1,pink?'#e0a49a':'#c8c5a0');this.rect(x-5,y-18,11,20,'#a18565');this.rect(x-3,y-16,7,17,'#806d58');this.rect(x+2,y-8,1,2,'#f6d999');for(const dx of [-15,11]){this.rect(x+dx,y-23,9,11,'#a68b66');this.rect(x+dx+1,y-22,7,8,'#c5d6cd');this.rect(x+dx+4,y-22,1,8,'#fff1cf');this.rect(x+dx+1,y-18,7,1,'#fff1cf');}this.rect(x-25,y-29,50,5,pink?'#b8656a':'#8b9c79');for(let i=0;i<8;i++)this.rect(x-24+i*6,y-29,3,5,P.cream);this.rect(x-16,y-9,9,3,'#b28f65');this.flower(x-13,y-9);this.flower(x+17,y+1);}
  bench(x,y){this.rect(x-12,y-8,24,3,'#ab8862');this.rect(x-12,y-4,24,3,'#c8a275');this.rect(x-14,y,28,3,'#967457');this.rect(x-11,y+3,3,5,P.bark);this.rect(x+8,y+3,3,5,P.bark);}
  lamp(x,y){this.rect(x,y-23,2,25,'#9e8763');this.rect(x-3,y-26,8,7,'#b49c70');this.rect(x-2,y-25,6,5,'#fff3b7');this.rect(x-1,y-28,4,2,P.ink);this.rect(x-2,y,6,2,'#9e8763');}
- character(x,y,kind,t,walk=false,wedding=false,face=1,kneel=false,scale=1){
+ character(x,y,kind,t,walk=false,wedding=false,face=1,kneel=false,scale=1,outfit=0){
   // Rounded, two-head-tall sprites; all details share the map's one-pixel grid.
   const c=this.c;c.save();c.translate(Math.round(x),Math.round(y));c.scale(scale,scale);
   const step=walk?Math.floor(t/160)%4:0,bob=walk&&step%2?1:0;
@@ -21,6 +21,23 @@ export class PixelWorld{
   const leg=step===1?1:step===3?-1:0;
   this.rect(-5,-4,4,5+leg,'#5a4540');this.rect(2,-4,4,5-leg,'#5a4540');
   this.rect(-6,0+leg,5,2,girl?'#bd7c73':'#66504a');this.rect(2,0-leg,5,2,girl?'#bd7c73':'#66504a');
+  if(outfit){
+   const formal=outfit===3,denim=outfit===2;
+   const coat=formal?'#806c63':denim?'#83a3b9':girl?'#b7b4ad':'#515d83';
+   const edge=formal?'#66524b':denim?'#66869d':girl?'#94968f':'#3c4669';
+   if(girl&&formal){
+    this.rect(-6,-15,12,6,'#fffaf1');this.rect(-8,-9,16,5,'#f9eddb');this.rect(-10,-4,20,3,'#e4d2bd');this.rect(-8,-5,16,3,'#fff9ed');
+    this.rect(-7,-14,14,2,'#fffdf6');this.rect(-5,-7,1,4,'#e4d2bd');this.rect(5,-7,1,4,'#e4d2bd');
+   }else{
+    // Original body proportions, with jacket panels and a contrasting shirt.
+    this.rect(-7,-15,14,12,edge);this.rect(-6,-14,12,9,coat);this.rect(-3,-15,6,11,denim?(girl?'#494044':'#aaadb1'):'#fff3da');
+    this.rect(-5,-14,2,5,denim?'#c7d8de':coat);this.rect(3,-14,2,5,denim?'#c7d8de':coat);
+    if(denim){this.rect(-6,-8,3,2,'#b3c9d4');this.rect(4,-8,2,2,'#b3c9d4');}
+    if(formal){this.rect(-1,-14,2,9,'#423b40');}
+    if(girl){this.rect(-8,-5,16,3,edge);this.rect(-10,-3,20,2,edge);}
+   }
+   for(const side of [-1,1]){const arm=walk?(step%2?side:-side):0;this.rect(side<0?-9:7,-13+arm,3,6,girl&&formal?'#fff6e6':coat);this.rect(side<0?-9:7,-8+arm,3,3,shade);this.rect(side<0?-9:7,-8+arm,2,2,skin);}
+  }else{
   if(girl){
    this.rect(-6,-15,12,6,wedding?'#fffaf1':'#de9e9d');this.rect(-8,-9,16,5,wedding?'#f9eddb':'#e8b1ac');this.rect(-10,-4,20,3,wedding?'#e4d2bd':'#b9787a');this.rect(-8,-5,16,3,wedding?'#fff9ed':'#f1c3b8');
    this.rect(-4,-14,8,2,'#fff4e4');this.rect(-1,-11,2,8,'#c96f75');this.rect(-5,-10,4,2,'#c96f75');this.rect(1,-10,4,2,'#c96f75');this.rect(-5,-7,1,4,wedding?'#fffef8':'#f8d3c6');this.rect(5,-7,1,4,wedding?'#fffef8':'#f8d3c6');
@@ -30,6 +47,7 @@ export class PixelWorld{
   }
   // Soft sleeves, tiny palms, and the alternating walk cycle.
   for(const side of [-1,1]){const arm=walk?(step%2?side:-side):0;this.rect(side<0?-9:7,-13+arm,3,6,girl?(wedding?'#fff6e6':'#e6aaa5'):(wedding?'#59504a':'#8ba582'));this.rect(side<0?-9:7,-8+arm,3,3,shade);this.rect(side<0?-9:7,-8+arm,2,2,skin);}
+  }
   // Stepped round cheeks rather than a narrow rectangular face.
   this.rect(-7,-33,14,2,hair);this.rect(-10,-31,20,15,hair);this.rect(-11,-27,22,8,hair);
   this.rect(-8,-29,16,13,shade);this.rect(-10,-25,20,6,shade);this.rect(-6,-16,12,2,shade);
@@ -47,6 +65,11 @@ export class PixelWorld{
    this.rect(2,-37,5,5,'#ac505e');this.rect(9,-37,5,5,'#ac505e');this.rect(4,-35,3,2,'#e79298');this.rect(9,-35,3,2,'#e79298');this.rect(7,-34,2,3,'#c76977');this.rect(8,-31,2,4,'#c76977');
    if(wedding){this.rect(-8,-33,3,2,'#fff7e7');this.rect(-5,-34,3,2,'#fff7e7');this.rect(-2,-34,3,2,'#fff7e7');this.rect(-5,-33,1,1,'#dfb97b');this.rect(-5,-11,2,4,'#87a080');this.rect(-8,-13,3,3,'#fffef5');this.rect(-5,-14,3,3,'#efd5cd');this.rect(-2,-13,3,3,'#fffef5');}
   }
+  if(girl&&outfit===3){
+   this.rect(-5,-11,2,5,'#829552');
+   this.rect(-8,-13,3,3,'#f2cc55');this.rect(-5,-14,3,3,'#ffe080');this.rect(-2,-13,3,3,'#e9bb40');
+   this.rect(-7,-12,1,1,'#b58f32');this.rect(-4,-13,1,1,'#d7aa36');this.rect(-1,-12,1,1,'#ffe99a');
+  }
   c.restore();
  }
  arch(x,y){this.rect(x-23,y-42,4,45,'#b9a780');this.rect(x+20,y-42,4,45,'#b9a780');this.rect(x-21,y-45,42,4,'#c7b38c');this.rect(x-17,y-49,34,4,'#c7b38c');for(let i=0;i<9;i++){this.flower(x-23+i*6,y-43-(i>1&&i<7?4:0),i%2?P.white:P.pink);}for(let i=0;i<4;i++){this.flower(x-21,y-34+i*9);this.flower(x+21,y-34+i*9,P.white);}this.rect(x-18,y-41,3,27,'#fff5df');this.rect(x+16,y-41,3,27,'#fff5df');}
@@ -57,6 +80,7 @@ export class PixelWorld{
   // Small, consistent pixel clusters make the village feel like an embroidered map.
   for(let i=0;i<165;i++){let x=21+(i*73)%281,y=79+(i*37)%118;if(((x-160)/142)**2+((y-145)/71)**2<1){this.rect(x,y,2,1,i%3?'#cad6a6':'#b9ca97');if(i%7===0)this.rect(x+2,y-2,1,3,'#bdcd9d');}}
   const wedding=s.chapter===5, proposal=s.chapter===4;
+  const outfit=s.chapter>=4?3:s.chapter===3?2:1;
   if(wedding){
    this.rect(138,96,44,112,'#e8d8b6');this.rect(144,93,32,115,'#f4c8bd');this.rect(148,95,24,112,'#f9dfd1');this.arch(160,102);
    for(let row=0;row<3;row++)for(const side of [-1,1]){const x=160+side*59,y=134+row*24;this.bench(x,y+2);this.character(x,y,'groom',t,false,false,side===-1?1:-1,false,.7);this.character(x+side*20,y,'bride',t,false,false,side===-1?1:-1,false,.7);}
@@ -82,8 +106,8 @@ export class PixelWorld{
   // Character depth follows Y. The companion begins following only after the greeting.
   const pair=[{...s.player,kind:'groom',walking:s.moving}];
   if(s.chapter!==1||s.title)pair.push({...s.partner,kind:'bride',walking:s.joined&&s.moving});
-  else {this.character(235,125,'bride',t,false,false,-1);this.rect(242,109,5,4,P.cream);}
-  pair.sort((a,b)=>a.y-b.y).forEach(p=>this.character(p.x,p.y,p.kind,t,p.walking,wedding,p.kind==='groom'?s.facing:-1,s.proposalStep===1&&p.kind==='groom'));
+  else {this.character(235,125,'bride',t,false,false,-1,false,1,outfit);this.rect(242,109,5,4,P.cream);}
+  pair.sort((a,b)=>a.y-b.y).forEach(p=>this.character(p.x,p.y,p.kind,t,p.walking,wedding,p.kind==='groom'?s.facing:-1,s.proposalStep===1&&p.kind==='groom',1,outfit));
   if(s.joined&&Math.abs(s.player.x-s.partner.x)<34&&Math.abs(s.player.y-s.partner.y)<8){const left=Math.min(s.player.x,s.partner.x)+9,right=Math.max(s.player.x,s.partner.x)-9;this.rect(left,s.player.y-8,Math.max(2,Math.round(right-left)),2,'#efbc9f');this.rect((left+right)/2-1,s.player.y-9,3,3,'#ffe0bf');}
   if(s.effect&&time<s.effect.until){const n=s.reduced?0:Math.floor((time-s.effect.start)/170)%4;this.heart(s.player.x-1,s.player.y-48-n*2);if(s.effect.kind==='photo'){this.rect(s.partner.x+8,s.partner.y-34,3,3,P.cream);this.rect(s.partner.x+9,s.partner.y-37,1,9,P.cream);}if(s.effect.kind==='cafe'){this.rect(s.player.x+4,s.player.y-15,4,4,P.cream);this.rect(s.partner.x-7,s.partner.y-15,4,4,P.cream);}}
   if(s.proposalStep===1){this.rect(s.player.x+10,s.player.y-13,4,4,'#d9b264');this.rect(s.player.x+11,s.player.y-12,2,2,P.cream);this.rect(s.player.x+11,s.player.y-15,2,2,'#fffdf6');}
