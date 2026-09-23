@@ -1,0 +1,66 @@
+import { CONFIG as C } from './config.js';
+import { PixelWorld } from './art.js';
+import { PhotoGallery } from './gallery.js';
+import { WeddingAudio } from './audio.js';
+const $=id=>document.getElementById(id);
+const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+export class StoryGame{
+ constructor(onInvite){
+  this.onInvite=onInvite;this.art=new PixelWorld($('canvas'));this.gallery=new PhotoGallery();this.keys=new Set();this.auto=false;this.sound=false;this.audio=new WeddingAudio();this.hidden=false;this.galleryOpen=false;this.reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',e=>{this.reduced=e.matches;this.state.reduced=e.matches;});
+  $('action').addEventListener('click',()=>this.interact());$('dialogue').addEventListener('click',()=>this.advanceDialogue());
+  $('auto').addEventListener('click',()=>{this.auto=!this.auto;this.keys.clear();this.state.target=null;this.nextAuto=performance.now()+600;$('auto').setAttribute('aria-pressed',String(this.auto));$('auto').textContent=this.auto?'Ⅱ 자동 진행 중':'▷ 자동 진행';this.renderPoints();});
+  this.sound=C.music.autoplay;const updateSound=()=>{const label=!this.sound?'♪ 음악 꺼짐':this.audio.isPlaying?'♪ 음악 켜짐':'♪ 음악 재생';for(const id of ['sound','invite-sound']){const b=$(id);if(b){b.setAttribute('aria-pressed',String(this.sound));b.textContent=label;}}};
+  this.toggleSound=async()=>{const playing=this.sound&&this.audio.isPlaying;this.sound=!playing;updateSound();const ok=await this.audio.setEnabled(this.sound);if(!ok)this.sound=false;updateSound();};$('sound').addEventListener('click',this.toggleSound);
+  const startMusic=(event)=>{if(event?.target?.closest?.('#sound,#invite-sound'))return;if(this.sound)this.audio.setEnabled(true).then(updateSound);};for(const name of ['pointerdown','touchend','keydown'])document.addEventListener(name,startMusic,{passive:true});
+  this.audio.onStateChange=updateSound;startMusic();updateSound();
+  $('canvas').addEventListener('pointerdown',e=>{if(this.hidden||this.auto||this.state.title)return;e.preventDefault();$('canvas').focus({preventScroll:true});if(this.dialogue){this.advanceDialogue();return;}const r=e.currentTarget.getBoundingClientRect();this.moveTo({x:(e.clientX-r.left)*320/r.width,y:(e.clientY-r.top)*240/r.height});});
+  window.addEventListener('keydown',e=>{if(this.hidden||this.galleryOpen||e.ctrlKey||e.altKey||e.metaKey)return;const k=e.key.toLowerCase();if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d'].includes(k)&&!this.auto&&!this.state.title){e.preventDefault();this.keys.add(k);this.state.target=null;}if((k==='enter'||k===' ')&&!e.repeat&&!['BUTTON','A','INPUT'].includes(document.activeElement.tagName)){e.preventDefault();if(this.dialogue)this.advanceDialogue();else this.interact();}});
+  window.addEventListener('keyup',e=>this.keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>this.keys.clear());document.addEventListener('visibilitychange',()=>this.keys.clear());
+  this.reset();this.last=performance.now();this.frame=this.frame.bind(this);requestAnimationFrame(this.frame);
+ }
+ reset(){this.auto=false;this.hidden=false;this.galleryOpen=false;this.pendingReward=null;this.claimed=[];this.keys.clear();this.dialogue=null;this.nextAuto=0;this.state={title:true,chapter:0,player:{x:108,y:155},partner:{x:218,y:181},joined:false,moving:false,facing:1,hearts:[],proposalStep:0,weddingDone:false,target:null,effect:null,reduced:this.reduced};$('game').classList.remove('playing');$('game').hidden=false;$('invitation').hidden=true;$('auto').setAttribute('aria-pressed','false');$('auto').textContent='▷ 자동 진행';$('couple-name').textContent=`${C.groom} ♥ ${C.bride}`;this.renderUI();}
+ unlock(key){if(C.treasures[key]&&!this.claimed.includes(key))this.pendingReward=key;this.state.target=null;this.keys.clear();this.renderUI();}
+ openTreasure(){const key=this.pendingReward;if(!key||this.galleryOpen)return;const reward=C.treasures[key];this.galleryOpen=true;this.keys.clear();this.state.target=null;this.state.moving=false;this.effect();this.gallery.open({ids:reward.photos,title:reward.title,auto:this.auto,onSkip:this.onInvite,onClose:()=>{this.galleryOpen=false;this.claimed.push(key);this.pendingReward=null;this.nextAuto=performance.now()+1500;this.renderUI();$('action').focus({preventScroll:true});}});}
+ pause(){this.hidden=true;this.keys.clear();this.state.target=null;this.state.moving=false;}
+ moveTo(p){if(this.dialogue||this.state.title||this.pendingReward||this.galleryOpen)return;this.state.target={x:Math.max(35,Math.min(284,p.x)),y:Math.max(104,Math.min(209,p.y))};}
+ points(){const s=this.state;if(s.chapter===1)return[{id:'path',x:211,y:145,label:'꽃길로 가기'}];if(s.chapter===2&&!s.joined)return[{id:'meet',x:199,y:147,label:'다가가기'}];if(s.chapter===3){const p=[{id:'cafe',x:86,y:143,label:'01 카페'},{id:'flowers',x:224,y:156,label:'02 꽃길'},{id:'photo',x:157,y:189,label:'03 사진'}];if(s.hearts.length===3)p.push({id:'next',x:237,y:119,label:'다음 계절로'});return p;}if(s.chapter===4&&s.proposalStep===0)return[{id:'promise',x:152,y:148,label:'마음 전할 곳'}];if(s.chapter===5&&!s.weddingDone)return[{id:'aisle',x:156,y:108,label:'함께 걸어가기'}];return [];}
+ nearest(){return this.points().filter(p=>!this.state.hearts.includes(p.id)).find(p=>dist(p,this.state.player)<15);}
+ enter(chapter){const s=this.state;s.title=false;s.chapter=chapter;s.target=null;s.effect=null;this.keys.clear();this.dialogue=null;$('game').classList.add('playing');const positions={1:[68,145,234,125],2:[77,168,218,146],3:[120,181,146,183],4:[94,164,120,166],5:[147,204,173,204]};const p=positions[chapter];s.player={x:p[0],y:p[1]};s.partner={x:p[2],y:p[3]};this.renderUI();if(chapter===1)this.say([C.text.daily],()=>{});}
+ say(lines,done){this.keys.clear();this.state.target=null;this.dialogue={lines,index:0,start:performance.now(),done};this.nextAuto=performance.now()+2700;this.renderUI();}
+ advanceDialogue(){if(!this.dialogue)return;const d=this.dialogue,now=performance.now(),text=d.lines[d.index];if(now-d.start<text.length*33&&!this.reduced){d.start=now-text.length*33;this.nextAuto=now+1800;return;}d.index++;if(d.index>=d.lines.length){this.dialogue=null;d.done?.();}else{d.start=now;this.nextAuto=now+2700;}this.renderUI();}
+ effect(kind='heart'){const now=performance.now();this.state.effect={kind,start:now,until:now+2600};this.beep();}
+ interact(){const s=this.state;if(this.hidden||this.galleryOpen)return;if(this.dialogue){this.advanceDialogue();return;}if(this.pendingReward){this.openTreasure();return;}if(s.title){this.enter(1);return;}if(s.chapter===2&&s.joined){this.enter(3);return;}if(s.chapter===4&&s.proposalStep===1){s.proposalStep=2;this.effect();this.say([C.text.acceptance],()=>this.unlock('promise'));return;}if(s.chapter===4&&s.proposalStep===2){this.enter(5);return;}if(s.chapter===5&&s.weddingDone){this.onInvite();return;}const p=this.nearest();if(!p)return;
+  if(p.id==='path'){this.enter(2);}
+  else if(p.id==='meet'){s.player={x:198,y:146};s.partner={x:224,y:146};s.facing=1;this.effect();this.say(C.text.greeting,()=>{s.joined=true;this.unlock('meet');});}
+  else if(['cafe','flowers','photo'].includes(p.id)&&!s.hearts.includes(p.id)){s.partner={x:s.player.x+26,y:s.player.y};s.hearts.push(p.id);this.effect(p.id);this.say([C.text.memories[['cafe','flowers','photo'].indexOf(p.id)]],()=>this.unlock(p.id));}
+  else if(p.id==='next'){this.enter(4);}
+  else if(p.id==='promise'){s.player={x:150,y:148};s.partner={x:176,y:148};s.proposalStep=1;this.effect();this.say([C.text.proposal],()=>this.renderUI());}
+  else if(p.id==='aisle'){s.weddingDone=true;this.effect();this.say(C.text.ending,()=>this.renderUI());}
+  this.renderUI();
+ }
+ renderUI(){const s=this.state;
+  $('eyebrow').textContent=s.title?"YOU'RE INVITED TO OUR STORY":`CHAPTER ${String(s.chapter).padStart(2,'0')}`;
+  if(s.title){$('scene-title').replaceChildren(document.createTextNode('OUR LITTLE'),document.createElement('br'),Object.assign(document.createElement('em'),{textContent:'STORY'}));}else $('scene-title').textContent=C.text.chapters[s.chapter-1];
+  $('scene-subtitle').textContent=s.title?C.text.titleIntro:C.text.subtitles[s.chapter-1];$('scene-subtitle').style.whiteSpace='pre-line';
+  $('chapter-label').textContent=s.title?'A LITTLE JOURNEY, A LIFETIME TOGETHER':'OUR LITTLE STORY';$('progress').textContent=s.title?'01 — 05':`${String(s.chapter).padStart(2,'0')} — 05`;
+  $('dialogue').hidden=!this.dialogue;$('couple-name').hidden=!s.title;$('memory-meter').hidden=s.chapter!==3;
+  $('memory-meter').setAttribute('aria-label',`모은 추억 ${s.hearts.length}개`);[...$('memory-meter').children].forEach((e,i)=>e.textContent=i<s.hearts.length?'♥':'♡');
+  $('world-label').textContent=s.title?'두 사람의 작은 세상':s.chapter===3?'추억을 세 개 모으면 다음 길이 열려요':s.chapter===4?'앞으로의 모든 계절도':s.chapter===5?'JUST MARRIED · 이제, 새로운 시작':'';
+  $('instruction').textContent=s.title?'약 1–2분의 이야기 · 천천히 함께 걸어요':'목적지 터치 / 방향키·WASD 이동 · Enter·Space 대화';
+  this.renderPoints();this.renderAction();
+ }
+ renderPoints(){const container=$('waypoints');container.replaceChildren();$('world').querySelector('.treasure-button')?.remove();if(this.dialogue)return;if(this.pendingReward){const b=document.createElement('button');b.className='treasure-button';b.setAttribute('aria-label','보물상자 열기 · 사진 3장');const cv=document.createElement('canvas');cv.width=40;cv.height=32;cv.setAttribute('aria-hidden','true');const a=new PixelWorld(cv);a.chest(20,25);b.append(cv,Object.assign(document.createElement('span'),{textContent:'사진 보물상자'}));b.addEventListener('click',()=>this.openTreasure());$('world').append(b);return;}for(const p of this.points()){const b=document.createElement('button');b.className='waypoint'+(this.state.hearts.includes(p.id)?' completed':'');b.textContent=this.state.hearts.includes(p.id)?'♥ '+p.label:p.label;b.style.left=`${p.x/3.2}%`;b.style.top=`${(p.y-43)/2.4}%`;b.dataset.point=p.id;b.setAttribute('aria-label',p.label+' 목적지로 이동');b.disabled=this.state.hearts.includes(p.id)||this.auto;b.addEventListener('click',()=>{if(!this.auto)this.moveTo(p);});container.append(b);}}
+ renderAction(){const s=this.state,p=this.nearest();let label='목적지를 터치해 주세요',enabled=false,hint='표지판을 누르면 그곳으로 걸어가요';if(s.title){label='GAME START  ▶';enabled=true;hint='작은 만남에서 시작된, 평생의 모험';}else if(this.dialogue){label='이야기 계속  ▾';enabled=true;hint=s.chapter===2?'마주 본 두 사람 사이에 작은 마음이 피어납니다.':'서두르지 않아도 괜찮아요.';}else if(s.chapter===2&&s.joined){label='이제, 함께 걷기  →';enabled=true;hint='혼자였던 발걸음이, 이제는 둘이 되었습니다.';}else if(s.chapter===4&&s.proposalStep===1){label='함께할게  ♥';enabled=true;hint='서로의 가장 가까운 곳에서';}else if(s.chapter===4&&s.proposalStep===2){label='우리의 새로운 시작으로  →';enabled=true;hint='두 사람의 약속 너머, 새로운 길이 열렸습니다.';}else if(s.chapter===5&&s.weddingDone){label='결혼식에 초대합니다';enabled=true;hint='이제, 다음 이야기를 함께해 주세요.';}else if(p){enabled=true;label=({path:'꽃길로 걸어가기',meet:'안녕, 인사하기',cafe:'함께 차 한 잔',flowers:'꽃길 함께 걷기',photo:'우리의 순간 남기기',next:'다음 계절로',promise:'마음 전하기',aisle:'우리의 약속'})[p.id];hint='도착했어요. 아래 버튼으로 이야기를 이어가세요.';}else if(s.chapter===1)hint='꽃길 표지판을 터치해 첫걸음을 옮겨 보세요.';else if(s.chapter===3)hint=`함께 만든 추억 ${s.hearts.length} / 3 · 카페, 꽃길, 사진`;else if(s.chapter===5)hint='같은 속도로, 같은 곳을 향해 걸어갑니다.';
+  if(this.pendingReward&&!this.dialogue){label='보물상자 열기 · 사진 3장';enabled=true;hint='목표 달성! 두 사람의 소중한 사진을 발견했어요.';}
+  $('action').textContent=label;$('action').disabled=!enabled;$('hint').textContent=hint;
+ }
+ beep(){this.audio.chime();}
+ frame(now){const dt=Math.min((now-this.last)/1000,.05);this.last=now;const s=this.state;if(!this.hidden&&!this.galleryOpen&&!document.hidden){
+  if(this.dialogue){const d=this.dialogue,text=d.lines[d.index];$('dialogue-text').textContent=this.reduced?text:text.slice(0,Math.floor((now-d.start)/33));}
+  if(this.auto&&now>this.nextAuto){if(this.dialogue){this.advanceDialogue();this.nextAuto=now+2400;}else if(this.pendingReward||s.title||this.nearest()||(s.chapter===2&&s.joined)||(s.chapter===4&&s.proposalStep>0)||(s.chapter===5&&s.weddingDone)){this.interact();this.nextAuto=now+1900;}else{const p=this.points().find(p=>!s.hearts.includes(p.id));if(p)this.moveTo(p);this.nextAuto=now+250;}}
+  s.moving=false;
+  if(!this.dialogue&&!s.title&&!this.pendingReward){let dx=0,dy=0;if(!this.auto){dx=Number(this.keys.has('arrowright')||this.keys.has('d'))-Number(this.keys.has('arrowleft')||this.keys.has('a'));dy=Number(this.keys.has('arrowdown')||this.keys.has('s'))-Number(this.keys.has('arrowup')||this.keys.has('w'));}if(!dx&&!dy&&s.target){dx=s.target.x-s.player.x;dy=s.target.y-s.player.y;if(Math.hypot(dx,dy)<1.6){s.player={...s.target};s.target=null;dx=0;dy=0;}}const len=Math.hypot(dx,dy);if(len){const speed=Math.min(49*dt,len);s.player.x=Math.max(35,Math.min(284,s.player.x+dx/len*speed));s.player.y=Math.max(104,Math.min(209,s.player.y+dy/len*speed));s.facing=dx<0?-1:1;s.moving=true;}if(s.joined){const target={x:Math.min(301,s.player.x+26),y:s.player.y+2};const d=dist(s.partner,target);if(d>.5){const n=Math.min(1,dt*7);s.partner.x+=(target.x-s.partner.x)*n;s.partner.y+=(target.y-s.partner.y)*n;}}}
+  this.renderAction();this.art.draw(s,now);
+ }requestAnimationFrame(this.frame);}
+}
