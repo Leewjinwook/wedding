@@ -1,38 +1,38 @@
 [
   {
     "file": "photo-01.jpg",
-    "source": "5.jpg",
-    "width": 1067,
+    "source": "IMG_2689.JPG",
+    "width": 1042,
     "height": 1600
   },
   {
     "file": "photo-02.jpg",
-    "source": "6.jpg",
-    "width": 1067,
+    "source": "IMG_2690.JPG",
+    "width": 1009,
     "height": 1600
   },
   {
     "file": "photo-03.jpg",
-    "source": "2.jpg",
+    "source": "IMG_2685.JPG",
     "width": 1067,
     "height": 1600
   },
   {
     "file": "photo-04.jpg",
-    "source": "3.jpg",
+    "source": "IMG_2686.JPG",
     "width": 1600,
-    "height": 1067
+    "height": 1086
   },
   {
     "file": "photo-05.jpg",
-    "source": "1.jpg",
+    "source": "IMG_2684.JPG",
     "width": 1067,
     "height": 1600
   },
   {
     "file": "photo-06.jpg",
-    "source": "4.jpg",
-    "width": 1067,
+    "source": "IMG_2687.JPG",
+    "width": 1057,
     "height": 1600
   },
   {

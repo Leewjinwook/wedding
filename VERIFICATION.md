@@ -87,3 +87,10 @@
 사용자 요청으로 사진 기반 캐릭터 변경을 취소하고 기존 배포본의 character()를 복원했습니다. 챕터별 사진 의상 분기를 제거하고 원래 마지막 장 웨딩 전환을 유지. 실제 게임에서 기본 캐릭터 표시 확인 및 문법 검사 통과.
 
 의상 전용 변경 검증: 모든 의상에서 신랑·신부의 머리 영역(y<-15) 드로잉 명령이 기본 캐릭터와 동일함을 비교 통과. 예복 여부별로 각각 비교했습니다. 세 의상 걷기 미리보기 시각 확인 및 문법 검사 통과.
+
+## 2026-09-24 corrected photo replacement
+- Replaced all 15 album/treasure photos with newly supplied corrected images, matching existing scenes and IDs.
+- Optimized to maximum 1600px, preserved aspect ratios and EXIF orientation; combined JPEG size 1.97 MiB.
+- Added photo URL version 20260924b to refresh cached images.
+- Browser verified all 15 thumbnails loaded, full-size first image displayed, next navigation changed 01/15 to 02/15.
+
