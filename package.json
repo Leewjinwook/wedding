@@ -1,1 +1,1 @@
-{"name":"our-little-story","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node serve.mjs","test":"node tests/browser.cjs"}}
+{"name":"our-little-story","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node serve.mjs","test":"node tests/browser.cjs","test:forms":"node --test tests/wedding-forms.test.js","test:db":"node tests/database-security.mjs"},"devDependencies":{"@electric-sql/pglite":"0.5.8"}}

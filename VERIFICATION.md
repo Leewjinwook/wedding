@@ -94,3 +94,7 @@
 - Added photo URL version 20260924b to refresh cached images.
 - Browser verified all 15 thumbnails loaded, full-size first image displayed, next navigation changed 01/15 to 02/15.
 
+
+## 2026-09-24 RSVP and Guest Book
+See RSVP_RELEASE.md for the new checks. Four validation/statistics tests and 20 local PGlite SQL security checks passed. Browser success flows used a separate local test DB, while actual Supabase correctly reported missing schema. Real project writes and real administrator login remain pending SQL and UID setup. Existing invitation/account code, character renderer and original stylesheet have identical before/after SHA-256 hashes.
+
