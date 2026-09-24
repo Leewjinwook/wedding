@@ -24,9 +24,9 @@ export const CONFIG = {
   accounts: [
     { label: '신랑', bank: '토스뱅크', number: '1000-0892-5960', holder: '이진욱' },
     { label: '신랑 아버지', bank: 'KB국민은행', number: '837601-04-108455', holder: '이춘목' },
-    { label: '신랑 어머니', bank: 'IBK기업은행', number: '149-00606-703-018', holder: '이미경' }
-    { label: '신부', bank: '카카오뱅크', number: '7942-29-07510', holder: '이세라' }
-    { label: '신부 아버지', bank: '농협은행', number: '352-0522-4538-53', holder: '이종재' }
+    { label: '신랑 어머니', bank: 'IBK기업은행', number: '149-00606-703-018', holder: '이미경' },
+    { label: '신부', bank: '카카오뱅크', number: '7942-29-07510', holder: '이세라' },
+    { label: '신부 아버지', bank: '농협은행', number: '352-0522-4538-53', holder: '이종재' },
     { label: '신부 아버지', bank: '우체국', number: '100479-02-168060', holder: '이미애' }
   ],
   photos: [
@@ -60,7 +60,7 @@ export const CONFIG = {
   text: {
     title: 'OUR LITTLE STORY',
     titleIntro: '서로 다른 길을 걷던 우리가\n하나의 이야기가 되기까지',
-    invitation: '서로 남이었던 우리가\n이제 평생의 편이 되려 합니다.\n\n저희의 새로운 시작에 함께해 주세요.',
+    invitation: '서로 모르고 지냈던 우리가 만나\n이제 평생의 서로 편이 되려 합니다.\n\n저희의 새로운 시작에 함께해 주세요.',
     chapters: ['서로 다른 하루', '너를 만난 날', '함께하는 하루', '앞으로도, 함께', '우리의 새로운 시작'],
     subtitles: ['각자의 작은 일상에서, 이야기의 첫걸음', '꽃길 끝에서 마주친 새로운 인연', '둘이어서 더 반짝이는 평범한 순간들', '앞으로의 계절을 약속하며', '끝이 아닌, 우리만의 새로운 시작'],
     daily: '같은 세상 속, 아직은 서로를 몰랐던 두 사람.',
