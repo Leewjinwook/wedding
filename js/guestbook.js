@@ -2,8 +2,8 @@ import { rpc, errorMessage } from './wedding-api.js';
 import { makeDialog, formData, guestbookInput, nameField, honeypot } from './wedding-forms.js';
 
 export function mountGuestbook(root) {
-  const section = document.createElement('section'); section.className = 'invite-section wedding-social';
-  section.innerHTML = '<span class="kicker">WORDS TO TREASURE</span><h2>Guest Book</h2><p>두 사람의 이야기에<br>따뜻한 한마디를 남겨 주세요.</p><div class="w-entries" aria-live="polite"></div><p class="w-status" role="status"></p><button class="w-button" id="write-guestbook">방명록 작성하기</button><button class="w-button w-secondary" id="all-guestbook">방명록 전체보기</button><button class="w-button w-secondary" id="retry-guestbook" hidden>다시 불러오기</button>';
+  const section = document.createElement('section'); section.className = 'invite-section wedding-social guild-section';
+  section.innerHTML = '<span class="kicker">WORDS TO TREASURE</span><h2>Guest Book</h2><p>두 사람의 이야기에<br>따뜻한 한마디를 남겨 주세요.</p><div class="guild-board" role="region" aria-label="최근 축하 메시지 게시판"><div class="guild-board-label"><span aria-hidden="true">✦</span> GUILD MESSAGE BOARD <span aria-hidden="true">✦</span></div><div class="w-entries" aria-live="polite"></div><p class="w-status" role="status">마음을 불러오는 중…</p><button class="w-button w-secondary" id="retry-guestbook" hidden>다시 불러오기</button><p class="guild-board-foot">우리의 모험에 남겨 주신 소중한 마음</p></div><button class="w-button" id="write-guestbook">방명록 작성하기</button><button class="w-button w-secondary" id="all-guestbook">방명록 전체보기</button>';
   root.append(section);
   const status = section.querySelector('.w-status'), preview = section.querySelector('.w-entries'), retry = section.querySelector('#retry-guestbook');
   const all = makeDialog('우리에게 남겨 주신 마음', '<div class="w-all-entries"></div><p class="w-status" role="status"></p><button class="w-button w-secondary" id="more-guestbook">더 보기</button>');
@@ -28,7 +28,7 @@ export function mountGuestbook(root) {
     try {
       const rows = await rpc('list_guestbook', { p_limit:3, p_offset:0 });
       if (version !== previewVersion) return;
-      cards(preview, rows); status.textContent = rows.length ? '' : '첫 번째 축하의 마음을 남겨 주세요 ♡';
+      cards(preview, rows); status.textContent = rows.length ? '' : '아직 등록된 메시지가 없습니다.\n첫 번째 축하 메시지를 남겨주세요 ♡';
     } catch (e) { if (version !== previewVersion) return; status.textContent = errorMessage(e); retry.hidden = false; }
   }
   async function loadAll(reset = false) {
@@ -79,6 +79,6 @@ export function mountGuestbook(root) {
     } catch (e) { error.textContent = errorMessage(e); }
     finally { deleting = false; deletion.busy(false); submit.disabled = false; }
   });
-  const observer = new IntersectionObserver(entries => { if (entries.some(entry => entry.isIntersecting)) { observer.disconnect(); loadPreview(); } });
+  const observer = new IntersectionObserver(entries => { if (entries.some(entry => entry.isIntersecting)) { observer.disconnect(); section.querySelector('.guild-board').classList.add('guild-visible'); loadPreview(); } });
   observer.observe(section);
 }

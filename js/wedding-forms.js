@@ -44,7 +44,7 @@ export function makeDialog(title, content) {
   dialog.addEventListener('close', () => { document.body.style.overflow = previousOverflow; opener?.focus(); });
   return {
     dialog,
-    open() { opener = document.activeElement; previousOverflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; dialog.showModal(); },
+    open() { opener = document.activeElement; previousOverflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; dialog.showModal(); dialog.scrollTop = 0; },
     close() { dialog.close(); },
     busy(value) { busy = value; dialog.querySelector('.w-close').disabled = value; }
   };

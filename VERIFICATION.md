@@ -98,3 +98,12 @@
 ## 2026-09-24 RSVP and Guest Book
 See RSVP_RELEASE.md for the new checks. Four validation/statistics tests and 20 local PGlite SQL security checks passed. Browser success flows used a separate local test DB, while actual Supabase correctly reported missing schema. Real project writes and real administrator login remain pending SQL and UID setup. Existing invitation/account code, character renderer and original stylesheet have identical before/after SHA-256 hashes.
 
+
+## 2026-09-24 Guild board and attendee drilldown
+- Guest Book recent-three preview now uses a cream/pink village noticeboard with CSS pixel pins/corners. Header and explanatory text retained. Empty/loading/error states are inside the board. Long previews clamp to three lines; full view retains the full text. Reduced-motion is honored.
+- RSVP existing name field is explicitly labelled required; dialogs reset scroll position on opening.
+- Admin groom/bride attendee totals filter the already-authorized response list to attending guests only; all responses can be restored. No auth or query permission changes.
+- Changed js/guestbook.js, js/admin.js, js/rsvp.js, js/wedding-forms.js, wedding-social.css, tests/wedding-forms.test.js; added js/attendance-filter.js.
+- Five unit tests passed. Isolated browser fixture verified zero/one/two/three entries, Korean/English/emoji, long text preview versus full text, immediate creation/deletion refresh, 375px/430px/mobile and desktop width, groom/bride filtering and all-response reset. Production data was not modified.
+- Supabase schema SHA-256 matches pre-change backup. No SQL or Supabase configuration changes required.
+

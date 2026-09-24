@@ -1,12 +1,38 @@
 import { getClient, errorMessage } from './wedding-api.js';
 import { summarize } from './wedding-forms.js';
+import { filterAttendance } from './attendance-filter.js';
 const $ = id => document.getElementById(id);
-let client, version = 0, busy = false;
-function clearPrivateData() { ++version; $('admin-content').hidden = true; $('admin-stats').replaceChildren(); $('admin-rows').replaceChildren(); }
+let client, version = 0, busy = false, currentRows = [], selectedSide = 'all';
+function clearPrivateData() { ++version; currentRows = []; selectedSide = 'all'; $('admin-content').hidden = true; $('admin-stats').replaceChildren(); $('admin-rows').replaceChildren(); }
 function showRows(rows) {
+  currentRows = rows;
   const labels = ['총 응답 수','참석 예정 인원','불참 응답 수','신랑측 참석 인원','신부측 참석 인원','식사 예정 인원'];
   $('admin-stats').replaceChildren(); $('admin-rows').replaceChildren();
-  summarize(rows).forEach((value,i) => { const card = document.createElement('div'), number = document.createElement('strong'); card.className='w-stat'; card.textContent=labels[i]; number.textContent=String(value); card.append(number); $('admin-stats').append(card); });
+  summarize(rows).forEach((value,i) => {
+    const side = i === 3 ? 'groom' : i === 4 ? 'bride' : null;
+    const card = document.createElement(side ? 'button' : 'div'), number = document.createElement('strong');
+    card.className='w-stat'; card.textContent=labels[i]; number.textContent=String(value); card.append(number);
+    if (side) {
+      card.type='button'; card.dataset.side=side; card.setAttribute('aria-controls','admin-rows');
+      const hint=document.createElement('span');hint.className='w-stat-hint';hint.textContent='명단 보기 ›';card.append(hint);
+      card.onclick=()=>{selectedSide=side;renderList();$('admin-list-title').focus({preventScroll:true});$('admin-list-title').scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});};
+    }
+    $('admin-stats').append(card);
+  });
+  renderList();
+}
+function renderList() {
+  const rows=filterAttendance(currentRows,selectedSide), root=$('admin-rows');root.replaceChildren();
+  document.querySelectorAll('#admin-stats [data-side]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.side===selectedSide)));
+  const tools=document.createElement('div'),title=document.createElement('h2');tools.className='w-list-tools';title.id='admin-list-title';title.tabIndex=-1;
+  const label=selectedSide==='groom'?'신랑측 참석 명단':selectedSide==='bride'?'신부측 참석 명단':'전체 응답';
+  const people=rows.reduce((sum,row)=>sum+row.guest_count,0);
+  title.textContent=selectedSide==='all'?`${label} · ${rows.length}건`:`${label} · ${rows.length}건 / ${people}명`;
+  tools.append(title);
+  if(selectedSide!=='all'){const reset=document.createElement('button');reset.type='button';reset.className='w-button w-secondary';reset.textContent='전체 응답 보기';reset.onclick=()=>{selectedSide='all';renderList();$('admin-list-title').focus();};tools.append(reset);}
+  root.append(tools);
+  if(!rows.length){const empty=document.createElement('p');empty.className='w-status';empty.textContent=selectedSide==='all'?'아직 접수된 응답이 없어요.':'아직 참석 예정인 하객이 없어요.';root.append(empty);}
+  if(selectedSide!=='all'&&rows.length){const note=document.createElement('p');note.className='w-help';note.textContent='이름은 응답자 기준이며, 인원에는 동행인이 포함됩니다.';root.append(note);}
   for (const row of rows) {
     const card=document.createElement('article'), heading=document.createElement('h2'), dl=document.createElement('dl'); card.className='w-entry'; heading.textContent=row.name;
     const values = [['구분',row.side==='groom'?'신랑측':'신부측'],['참석',row.attendance_status==='attending'?'참석':'불참'],['인원',`${row.guest_count}명`],['식사',({yes:'식사',no:'안 함',undecided:'미정',not_applicable:'해당 없음'})[row.meal_status]],['메시지',row.message||'—'],['작성일',new Date(row.created_at).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})]];
