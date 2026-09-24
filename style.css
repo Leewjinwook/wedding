@@ -47,3 +47,6 @@
 .account-person{display:block;font:14px/1.8 "Malgun Gothic","Apple SD Gothic Neo",sans-serif;color:#6f5d52}.account-person strong{font-weight:600}.account-body button:disabled{opacity:.48;cursor:default;background:#eee7de;color:#928174}.account-card summary:focus-visible{outline:2px solid #b77980;outline-offset:-4px}.account-body .account-number{font-size:12px}
 
 .account-body button{display:inline-flex;align-items:center;justify-content:center;width:44px;min-width:44px;height:44px;padding:10px;background:transparent;border:0;border-radius:10px;color:#8b7970}.account-body button:hover{background:#f3e9e3}.account-body button:focus-visible{outline:2px solid #b77980;outline-offset:2px}.account-copy-icon{display:block;flex-shrink:0}
+
+/* Wedding charter bus pickup information */
+.charter-stops{list-style:none;margin:16px 0 0;padding:0}.charter-stops li+li{margin-top:18px;padding-top:18px;border-top:1px solid #e8e1d7}.charter-stop-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.charter-time{white-space:nowrap;color:#a35e68;font-weight:600;font-variant-numeric:tabular-nums}.charter-stops li p{margin:6px 0 0;font-size:12px;line-height:1.8;word-break:keep-all;overflow-wrap:anywhere}
