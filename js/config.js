@@ -23,7 +23,11 @@ export const CONFIG = {
   contacts: [], // 예: { label: '신랑에게 연락하기', phone: '실제 전화번호' }
   accounts: [
     { label: '신랑', bank: '토스뱅크', number: '1000-0892-5960', holder: '이진욱' },
+    { label: '신랑 아버지', bank: 'KB국민은행', number: '837601-04-108455', holder: '이춘목' },
+    { label: '신랑 어머니', bank: 'IBK기업은행', number: '149-00606-703-018', holder: '이미경' }
     { label: '신부', bank: '카카오뱅크', number: '7942-29-07510', holder: '이세라' }
+    { label: '신부 아버지', bank: '농협은행', number: '352-0522-4538-53', holder: '이종재' }
+    { label: '신부 아버지', bank: '우체국', number: '100479-02-168060', holder: '이미애' }
   ],
   photos: [
     { id: 1, src: './assets/photos/photo-01.jpg?v=20260924b', alt: '노란 꽃다발과 반지 상자를 든 두 사람' },
