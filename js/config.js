@@ -27,7 +27,7 @@ export const CONFIG = {
     { label: '신랑 어머니', bank: 'IBK기업은행', number: '149-00606-703-018', holder: '이미경' },
     { label: '신부', bank: '카카오뱅크', number: '7942-29-07510', holder: '이세라' },
     { label: '신부 아버지', bank: '농협은행', number: '352-0522-4538-53', holder: '이종재' },
-    { label: '신부 아버지', bank: '우체국', number: '100479-02-168060', holder: '이미애' }
+    { label: '신부 어머니', bank: '우체국', number: '100479-02-168060', holder: '이미애' }
   ],
   photos: [
     { id: 1, src: './assets/photos/photo-01.jpg?v=20260924b', alt: '노란 꽃다발과 반지 상자를 든 두 사람' },
@@ -68,7 +68,7 @@ export const CONFIG = {
     memories: ['함께 웃는 날이 늘어나고', '평범한 하루가 추억이 되고', '어느새 서로의 가장 가까운 사람이 되었습니다.'],
     proposal: '앞으로의 모든 계절도 함께할래?',
     acceptance: '함께할게. 우리, 언제나 같은 편이 되자.',
-    ending: ['서로 남이었던 우리가', '이제 평생의 편이 되려 합니다.'],
+    ending: ['서로 모르고 지냈던 우리가 만나', '이제는 평생을 함께할 서로의 편이 되려 합니다.'],
     symbolic: '두 사람의 이야기는 여기서 끝나지 않습니다.\n이제, 평생을 함께하는 새로운 모험이 시작됩니다.'
   }
 };
