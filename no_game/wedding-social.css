@@ -1,0 +1,37 @@
+/* Isolated additions; existing game, accounts and gallery styles are untouched. */
+.wedding-social h2{font-size:21px}.wedding-social>p{color:var(--muted);line-height:1.9}
+.wedding-social .w-button,.wedding-dialog .w-button,.w-admin .w-button{display:block;width:100%;min-height:48px;padding:12px 18px;margin:12px 0;border:1px solid #e8cecb;border-radius:26px;background:#f1dedb;color:#885a60;box-shadow:none;font:15px/1.6 Jua,sans-serif;letter-spacing:0}
+.wedding-social .w-secondary,.wedding-dialog .w-secondary,.w-admin .w-secondary{background:transparent;border-color:#e8e1d7;color:#88776d}
+.wedding-dialog{position:fixed;inset:0;margin:auto;width:min(94vw,480px);max-height:90dvh;padding:22px;border:1px solid #e8e1d7;border-radius:24px;background:var(--paper);color:var(--ink);box-shadow:0 12px 45px #59473725;overflow-y:auto;overscroll-behavior:contain;text-align:left}
+.wedding-dialog::backdrop{background:#3e322d70}.wedding-dialog header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.wedding-dialog h2{font:21px/1.5 Jua,sans-serif;margin:0}.wedding-dialog .w-close{min-width:44px;min-height:44px;background:transparent;border:1px solid #e8e1d7;border-radius:50%;font-size:24px}
+.wedding-dialog form,.w-admin form{display:grid;gap:16px}.wedding-dialog label,.w-admin label{display:grid;gap:7px;font:14px/1.6 Jua,sans-serif}.wedding-dialog label span{color:var(--muted);font-size:12px}
+.wedding-dialog input,.wedding-dialog select,.wedding-dialog textarea,.w-admin input{display:block;width:100%;min-width:0;min-height:48px;border:1px solid #dfd4c7;border-radius:12px;background:#fffefb;color:var(--ink);padding:12px;font:16px/1.6 'Malgun Gothic',sans-serif;box-sizing:border-box}
+.wedding-dialog textarea{resize:vertical}.wedding-dialog input:focus,.wedding-dialog select:focus,.wedding-dialog textarea:focus,.w-admin input:focus{outline:2px solid #c58f94;outline-offset:2px}
+.wedding-dialog fieldset{padding:14px;border:1px solid #eae1d8;border-radius:14px;display:grid;gap:14px;min-width:0}.wedding-dialog fieldset[hidden]{display:none}.wedding-dialog small,.w-help{font:12px/1.7 'Malgun Gothic',sans-serif;color:var(--muted)}
+.w-error{color:#a83e49;font:13px/1.7 'Malgun Gothic',sans-serif;margin:0;white-space:pre-line}.w-status{font:13px/1.8 'Malgun Gothic',sans-serif;color:var(--muted);white-space:pre-line}.w-status:empty,.w-error:empty{display:none}
+.wedding-dialog .w-honey{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+.w-entry{position:relative;padding:18px;margin:12px 0;border:1px solid #ebe2d9;background:#fffdf9;border-radius:17px;text-align:left;overflow-wrap:anywhere}.w-entry>div{display:flex;align-items:center;gap:10px;padding-right:32px;flex-wrap:wrap}.w-entry strong{font-weight:400}.w-entry time{font:11px/1.7 'Malgun Gothic',sans-serif;color:var(--muted)}.w-entry p{font:14px/1.9 'Malgun Gothic',sans-serif!important;margin:12px 0 0;white-space:pre-wrap;color:var(--ink)}.w-entry .w-delete{position:absolute;right:6px;top:6px;min-width:44px;min-height:44px;border:0;background:transparent;color:#b29a90;font:22px sans-serif}
+.w-admin{max-width:720px;margin:24px auto;padding:24px;background:var(--paper);border:1px solid var(--line);border-radius:20px}.w-admin h1{font:26px Jua,sans-serif}.w-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.w-stat{padding:15px 10px;border:1px solid #e8e1d7;border-radius:15px;text-align:center;font-size:12px;color:var(--muted)}.w-stat strong{display:block;color:var(--pink);font-size:25px;margin-top:8px}.w-admin dl{display:grid;grid-template-columns:100px 1fr;gap:8px;font:14px/1.7 'Malgun Gothic',sans-serif}.w-admin dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}.w-admin nav{display:flex;gap:12px}.w-admin .w-status{color:#875e63}
+@media(max-width:520px){.wedding-dialog{padding:18px;max-height:88dvh}.w-admin{margin:12px;padding:18px}.w-stats{grid-template-columns:repeat(2,1fr)}}
+
+/* A small village message board, scoped to the recent guestbook only. */
+.guild-board{position:relative;margin:24px 0 20px;padding:12px;background:#f3ecdf;border:1px solid var(--line);box-shadow:inset 0 0 0 4px var(--paper),0 3px 0 #dacdb855;text-align:left}
+.guild-board::before,.guild-board::after{content:"";position:absolute;width:7px;height:7px;background:var(--pink);opacity:.55;top:-2px}
+.guild-board::before{left:-2px}.guild-board::after{right:-2px}
+.guild-board-label{display:flex;align-items:center;justify-content:center;gap:9px;padding:8px 0 14px;font:10px/1.5 Jua,sans-serif;letter-spacing:1.1px;color:var(--muted)}
+.guild-board-label span{color:var(--pink);font-size:12px}
+.guild-board .w-entry{margin:0 0 10px;padding:14px 14px 13px 20px;border:1px solid var(--line);border-radius:2px;background:var(--paper);box-shadow:2px 2px 0 #dacdb84d}
+.guild-board .w-entry::before{content:"";position:absolute;left:8px;top:18px;width:5px;height:5px;background:var(--pink);box-shadow:0 5px 0 #b85d6440}
+.guild-board .w-entry>div{gap:3px 8px;align-items:baseline}.guild-board .w-entry strong{font-size:15px;line-height:1.6}.guild-board .w-entry time{font-size:11px}
+.guild-board .w-entry p{margin-top:7px;font-size:13px!important;line-height:1.8!important;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+.guild-board .w-entry .w-delete{right:0;top:0}
+.guild-board .w-status{margin:12px 0 20px;padding:18px 8px;text-align:center;font:13px/1.9 'Malgun Gothic',sans-serif}
+.guild-section .guild-board-foot{margin:12px 0 4px;text-align:center;font:11px/1.6 Jua,sans-serif;color:var(--muted)}
+.guild-board.guild-visible{animation:guild-arrive .35s ease-out both}
+@keyframes guild-arrive{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.guild-board.guild-visible{animation:none}}
+.w-admin button.w-stat{background:var(--paper);color:var(--ink);font-family:inherit;cursor:pointer;min-height:108px}
+.w-admin button.w-stat:hover,.w-admin button.w-stat[aria-pressed="true"]{background:#f5e7e3;border-color:#c58f94}
+.w-stat-hint{display:block;margin-top:7px;font-size:12px;color:#996f72}
+.w-list-tools{margin:24px 0 8px}.w-list-tools h2{font:19px/1.6 Jua,sans-serif;scroll-margin-top:20px}
+.w-admin .w-list-tools .w-button{width:auto;padding:8px 18px;font-size:13px}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#faf5e9">
+  <meta name="description" content="이진욱과 이세라의 작은 이야기. 2026년 12월 19일, 결혼식에 초대합니다.">
+  <title>OUR LITTLE STORY · 이진욱 ♥ 이세라</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./wedding-social.css">
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar"><a class="brand" href="#" aria-label="첫 화면">Jinwook <span>♥</span> Sera <i>THE WEDDING QUEST</i></a><button id="skip" class="text-button">청첩장 바로 보기 <span aria-hidden="true">↗</span></button></header>
+    <main>
+      <section id="game" class="game-card" aria-label="두 사람의 이야기 게임">
+        <div class="game-top"><span id="chapter-label">A LITTLE JOURNEY, A LIFETIME TOGETHER</span><span id="progress" aria-label="이야기 진행">01 — 05</span></div>
+        <div class="scene-heading"><span id="eyebrow">YOU'RE INVITED TO OUR STORY</span><h1 id="scene-title">OUR LITTLE<br><em>STORY</em></h1><p id="scene-subtitle">서로 다른 길을 걷던 우리가<br>하나의 이야기가 되기까지</p></div>
+        <div class="world" id="world"><canvas id="canvas" width="320" height="240" tabindex="0" aria-label="픽셀 마을. 목적지를 터치하거나 방향키로 이동하세요."></canvas><div id="waypoints" aria-label="이동할 목적지"></div><div class="world-label" id="world-label">두 사람의 작은 세상</div><div id="memory-meter" hidden aria-label="모은 추억 0개"><span>♡</span><span>♡</span><span>♡</span></div></div>
+        <div class="story-panel"><p id="couple-name" class="couple-name"></p><button id="dialogue" class="dialogue" hidden><span id="dialogue-text"></span><small>터치해서 계속 ▾</small></button><p id="hint" class="hint">작은 만남에서 시작된, 평생의 모험</p><button id="action" class="primary">GAME START <span aria-hidden="true">▶</span></button><p id="instruction" class="instruction">약 1–2분의 이야기 · 천천히 함께 걸어요</p></div>
+        <footer class="game-controls"><button id="auto" aria-pressed="false">▷ 자동 진행</button><span class="tiny-heart" aria-hidden="true">♥</span><button id="sound" aria-pressed="false">♪ 소리 꺼짐</button></footer>
+      </section>
+      <section id="invitation" class="invitation" hidden aria-labelledby="invitation-title"></section>
+    </main>
+    <footer class="page-footer"><span>DECEMBER 19, 2026</span><span>A NEW CHAPTER BEGINS</span></footer>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="./js/app.js"></script>
+</body></html>
